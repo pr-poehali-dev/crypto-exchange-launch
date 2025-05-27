@@ -79,177 +79,271 @@ const TradingInterface = () => {
   }, []);
 
   const formatPrice = (price: number) => {
-    return new Intl.NumberFormat("ru-RU", {
+    return new Intl.NumberFormat("en-US", {
       minimumFractionDigits: 2,
       maximumFractionDigits: 2,
     }).format(price);
   };
 
   return (
-    <div className="min-h-screen bg-slate-900 text-white p-4">
+    <div className="min-h-screen bg-bybit-primary text-bybit-text">
       {/* Header */}
-      <div className="mb-6">
+      <div className="bg-bybit-secondary border-b border-bybit-border px-6 py-4">
         <div className="flex items-center justify-between">
-          <div className="flex items-center space-x-4">
-            <h1 className="text-2xl font-bold">🚀 CryptoExchange</h1>
-            <div className="flex items-center space-x-2">
-              <span className="text-3xl font-mono">
-                {formatPrice(currentPrice)}
+          <div className="flex items-center space-x-6">
+            <div className="flex items-center space-x-3">
+              <span className="text-2xl font-bold text-bybit-accent">
+                Bybit
               </span>
-              <span className="text-xl text-gray-400">USDT</span>
-              <span
-                className={`px-2 py-1 rounded text-sm ${priceChange >= 0 ? "bg-green-900 text-green-400" : "bg-red-900 text-red-400"}`}
+              <span className="text-lg text-bybit-textSec">|</span>
+              <span className="text-lg font-medium">BTC/USDT</span>
+            </div>
+            <div className="flex items-center space-x-4">
+              <div className="text-2xl font-mono font-semibold">
+                {formatPrice(currentPrice)}
+              </div>
+              <div
+                className={`px-2 py-1 rounded text-sm font-medium ${
+                  priceChange >= 0
+                    ? "bg-bybit-green/20 text-bybit-green"
+                    : "bg-bybit-red/20 text-bybit-red"
+                }`}
               >
                 {priceChange >= 0 ? "+" : ""}
                 {priceChange.toFixed(2)}%
-              </span>
+              </div>
             </div>
           </div>
-          <div className="text-right">
-            <div className="text-sm text-gray-400">24h Volume</div>
-            <div className="text-lg font-mono">1,234.56 BTC</div>
+          <div className="flex space-x-6 text-sm">
+            <div>
+              <div className="text-bybit-textSec">24h Change</div>
+              <div className="font-mono text-bybit-green">+1,234.56</div>
+            </div>
+            <div>
+              <div className="text-bybit-textSec">24h High</div>
+              <div className="font-mono">68,542.10</div>
+            </div>
+            <div>
+              <div className="text-bybit-textSec">24h Low</div>
+              <div className="font-mono">66,123.45</div>
+            </div>
+            <div>
+              <div className="text-bybit-textSec">24h Volume(BTC)</div>
+              <div className="font-mono">12,456.78</div>
+            </div>
           </div>
         </div>
       </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-4 gap-4">
-        {/* Order Book */}
-        <Card className="bg-slate-800 border-slate-700">
-          <CardHeader className="pb-3">
-            <CardTitle className="text-white text-lg">Стакан заявок</CardTitle>
-          </CardHeader>
-          <CardContent className="p-0">
-            <div className="px-4 pb-2">
-              <div className="grid grid-cols-3 text-xs text-gray-400 mb-2">
-                <div>Цена (USDT)</div>
-                <div className="text-right">Объем (BTC)</div>
-                <div className="text-right">Сумма</div>
+      <div className="flex h-[calc(100vh-80px)]">
+        {/* Left Sidebar - Order Book */}
+        <div className="w-80 bg-bybit-secondary border-r border-bybit-border flex flex-col">
+          <div className="p-4 border-b border-bybit-border">
+            <h3 className="text-base font-medium">Order Book</h3>
+          </div>
+
+          <div className="flex-1 overflow-hidden">
+            <div className="px-4 py-2 border-b border-bybit-border">
+              <div className="grid grid-cols-3 text-xs text-bybit-textSec">
+                <div>Price(USDT)</div>
+                <div className="text-right">Amount(BTC)</div>
+                <div className="text-right">Total</div>
               </div>
             </div>
 
-            {/* Asks (продажи) */}
-            <div className="max-h-40 overflow-hidden">
+            {/* Asks */}
+            <div className="flex-1 max-h-48 overflow-y-auto">
               {orderBook.asks.map((ask, i) => (
                 <div
                   key={i}
-                  className="grid grid-cols-3 px-4 py-1 text-xs hover:bg-slate-700"
+                  className="grid grid-cols-3 px-4 py-1 text-xs hover:bg-bybit-card/50"
                 >
-                  <div className="text-red-400 font-mono">
+                  <div className="text-bybit-red font-mono">
                     {formatPrice(ask.price)}
                   </div>
                   <div className="text-right font-mono">{ask.amount}</div>
-                  <div className="text-right font-mono">
+                  <div className="text-right font-mono text-bybit-textSec">
                     {(ask.price * parseFloat(ask.amount)).toFixed(0)}
                   </div>
                 </div>
               ))}
             </div>
 
-            <div className="px-4 py-3 bg-slate-700">
-              <div className="text-center font-mono text-lg">
-                <span
-                  className={
-                    priceChange >= 0 ? "text-green-400" : "text-red-400"
-                  }
+            {/* Current Price */}
+            <div className="px-4 py-3 bg-bybit-card border-y border-bybit-border">
+              <div className="text-center">
+                <div
+                  className={`text-lg font-mono font-semibold ${
+                    priceChange >= 0 ? "text-bybit-green" : "text-bybit-red"
+                  }`}
                 >
                   {formatPrice(currentPrice)}
-                </span>
+                </div>
+                <div className="text-xs text-bybit-textSec">≈ $67,485.50</div>
               </div>
             </div>
 
-            {/* Bids (покупки) */}
-            <div className="max-h-40 overflow-hidden">
+            {/* Bids */}
+            <div className="flex-1 max-h-48 overflow-y-auto">
               {orderBook.bids.map((bid, i) => (
                 <div
                   key={i}
-                  className="grid grid-cols-3 px-4 py-1 text-xs hover:bg-slate-700"
+                  className="grid grid-cols-3 px-4 py-1 text-xs hover:bg-bybit-card/50"
                 >
-                  <div className="text-green-400 font-mono">
+                  <div className="text-bybit-green font-mono">
                     {formatPrice(bid.price)}
                   </div>
                   <div className="text-right font-mono">{bid.amount}</div>
-                  <div className="text-right font-mono">
+                  <div className="text-right font-mono text-bybit-textSec">
                     {(bid.price * parseFloat(bid.amount)).toFixed(0)}
                   </div>
                 </div>
               ))}
             </div>
-          </CardContent>
-        </Card>
+          </div>
+        </div>
 
-        {/* Price Chart Placeholder */}
-        <Card className="lg:col-span-2 bg-slate-800 border-slate-700">
-          <CardHeader className="pb-3">
-            <CardTitle className="text-white text-lg">
-              График BTC/USDT
-            </CardTitle>
-          </CardHeader>
-          <CardContent>
-            <div className="h-80 bg-slate-900 rounded flex items-center justify-center border border-slate-600">
-              <div className="text-center">
-                <div className="text-4xl mb-4">📈</div>
-                <div className="text-gray-400">Свечной график</div>
-                <div className="text-sm text-gray-500 mt-2">
-                  Интеграция с TradingView в следующей итерации
+        {/* Main Content */}
+        <div className="flex-1 flex flex-col">
+          {/* Chart Area */}
+          <div className="flex-1 bg-bybit-secondary m-4 rounded border border-bybit-border">
+            <div className="p-4 border-b border-bybit-border">
+              <div className="flex items-center justify-between">
+                <h3 className="text-base font-medium">TradingView Chart</h3>
+                <div className="flex space-x-2 text-sm">
+                  {["1m", "5m", "15m", "1h", "4h", "1d"].map((timeframe) => (
+                    <button
+                      key={timeframe}
+                      className="px-2 py-1 rounded text-bybit-textSec hover:text-bybit-text hover:bg-bybit-card"
+                    >
+                      {timeframe}
+                    </button>
+                  ))}
                 </div>
               </div>
             </div>
-          </CardContent>
-        </Card>
+            <div className="h-96 flex items-center justify-center">
+              <div className="text-center">
+                <div className="text-4xl mb-4">📈</div>
+                <div className="text-bybit-textSec">
+                  TradingView Integration
+                </div>
+                <div className="text-sm text-bybit-textSec mt-2">
+                  Chart will be integrated in next iteration
+                </div>
+              </div>
+            </div>
+          </div>
 
-        {/* Trading Form */}
-        <Card className="bg-slate-800 border-slate-700">
-          <CardHeader className="pb-3">
-            <CardTitle className="text-white text-lg">Торговля</CardTitle>
-          </CardHeader>
-          <CardContent className="space-y-4">
-            <div className="flex space-x-2">
+          {/* Recent Trades */}
+          <div className="h-80 bg-bybit-secondary m-4 mt-0 rounded border border-bybit-border">
+            <div className="p-4 border-b border-bybit-border">
+              <h3 className="text-base font-medium">Recent Trades</h3>
+            </div>
+            <div className="h-64 overflow-y-auto">
+              <Table>
+                <TableHeader>
+                  <TableRow className="border-bybit-border hover:bg-transparent">
+                    <TableHead className="text-bybit-textSec text-xs h-8">
+                      Time
+                    </TableHead>
+                    <TableHead className="text-bybit-textSec text-xs h-8">
+                      Price(USDT)
+                    </TableHead>
+                    <TableHead className="text-bybit-textSec text-xs h-8">
+                      Amount(BTC)
+                    </TableHead>
+                  </TableRow>
+                </TableHeader>
+                <TableBody>
+                  {recentTrades.slice(0, 12).map((trade) => (
+                    <TableRow
+                      key={trade.id}
+                      className="border-bybit-border hover:bg-bybit-card/30 h-6"
+                    >
+                      <TableCell className="text-bybit-textSec font-mono text-xs py-1">
+                        {trade.time}
+                      </TableCell>
+                      <TableCell
+                        className={`font-mono text-xs py-1 ${
+                          trade.side === "buy"
+                            ? "text-bybit-green"
+                            : "text-bybit-red"
+                        }`}
+                      >
+                        {formatPrice(parseFloat(trade.price))}
+                      </TableCell>
+                      <TableCell className="font-mono text-xs py-1">
+                        {trade.amount}
+                      </TableCell>
+                    </TableRow>
+                  ))}
+                </TableBody>
+              </Table>
+            </div>
+          </div>
+        </div>
+
+        {/* Right Sidebar - Trading Panel */}
+        <div className="w-80 bg-bybit-secondary border-l border-bybit-border">
+          <div className="p-4">
+            <div className="flex space-x-1 mb-4">
               <Button
-                variant={orderType === "buy" ? "default" : "outline"}
-                className={`flex-1 ${orderType === "buy" ? "bg-green-600 hover:bg-green-700" : ""}`}
+                variant={orderType === "buy" ? "default" : "ghost"}
+                className={`flex-1 text-sm h-8 ${
+                  orderType === "buy"
+                    ? "bg-bybit-green hover:bg-bybit-green/90 text-white"
+                    : "text-bybit-textSec hover:text-bybit-text hover:bg-bybit-card"
+                }`}
                 onClick={() => setOrderType("buy")}
               >
-                Купить
+                Buy
               </Button>
               <Button
-                variant={orderType === "sell" ? "default" : "outline"}
-                className={`flex-1 ${orderType === "sell" ? "bg-red-600 hover:bg-red-700" : ""}`}
+                variant={orderType === "sell" ? "default" : "ghost"}
+                className={`flex-1 text-sm h-8 ${
+                  orderType === "sell"
+                    ? "bg-bybit-red hover:bg-bybit-red/90 text-white"
+                    : "text-bybit-textSec hover:text-bybit-text hover:bg-bybit-card"
+                }`}
                 onClick={() => setOrderType("sell")}
               >
-                Продать
+                Sell
               </Button>
             </div>
 
-            <div className="space-y-3">
+            <div className="space-y-3 mb-4">
               <div>
-                <label className="text-sm text-gray-400">Цена (USDT)</label>
+                <label className="text-xs text-bybit-textSec mb-1 block">
+                  Price
+                </label>
                 <Input
                   value={orderPrice}
                   onChange={(e) => setOrderPrice(e.target.value)}
                   placeholder={currentPrice.toString()}
-                  className="bg-slate-700 border-slate-600 text-white"
+                  className="bg-bybit-card border-bybit-border text-bybit-text h-8 text-sm"
                 />
               </div>
 
               <div>
-                <label className="text-sm text-gray-400">
-                  Количество (BTC)
+                <label className="text-xs text-bybit-textSec mb-1 block">
+                  Quantity
                 </label>
                 <Input
                   value={orderAmount}
                   onChange={(e) => setOrderAmount(e.target.value)}
                   placeholder="0.00000000"
-                  className="bg-slate-700 border-slate-600 text-white"
+                  className="bg-bybit-card border-bybit-border text-bybit-text h-8 text-sm"
                 />
               </div>
 
-              <div className="grid grid-cols-4 gap-1 text-xs">
-                {["25%", "50%", "75%", "100%"].map((percent) => (
+              <div className="grid grid-cols-4 gap-1">
+                {["25%", "50%", "75%", "Max"].map((percent) => (
                   <Button
                     key={percent}
                     variant="outline"
                     size="sm"
-                    className="border-slate-600 text-gray-400"
+                    className="border-bybit-border text-bybit-textSec hover:text-bybit-text hover:bg-bybit-card h-6 text-xs"
                   >
                     {percent}
                   </Button>
@@ -257,75 +351,33 @@ const TradingInterface = () => {
               </div>
 
               <Button
-                className={`w-full ${orderType === "buy" ? "bg-green-600 hover:bg-green-700" : "bg-red-600 hover:bg-red-700"}`}
+                className={`w-full h-8 text-sm font-medium ${
+                  orderType === "buy"
+                    ? "bg-bybit-green hover:bg-bybit-green/90"
+                    : "bg-bybit-red hover:bg-bybit-red/90"
+                } text-white`}
               >
-                {orderType === "buy" ? "Купить BTC" : "Продать BTC"}
+                {orderType === "buy" ? "Buy BTC" : "Sell BTC"}
               </Button>
             </div>
 
-            <div className="pt-4 border-t border-slate-700">
-              <div className="text-sm text-gray-400 mb-2">Баланс</div>
-              <div className="space-y-1 text-sm">
+            <div className="border-t border-bybit-border pt-4">
+              <div className="text-xs text-bybit-textSec mb-2">
+                Available Balance
+              </div>
+              <div className="space-y-1 text-xs">
                 <div className="flex justify-between">
-                  <span>BTC:</span>
+                  <span className="text-bybit-textSec">BTC:</span>
                   <span className="font-mono">0.12345678</span>
                 </div>
                 <div className="flex justify-between">
-                  <span>USDT:</span>
+                  <span className="text-bybit-textSec">USDT:</span>
                   <span className="font-mono">5,247.83</span>
                 </div>
               </div>
             </div>
-          </CardContent>
-        </Card>
-
-        {/* Recent Trades */}
-        <Card className="lg:col-span-4 bg-slate-800 border-slate-700">
-          <CardHeader className="pb-3">
-            <CardTitle className="text-white text-lg">
-              Последние сделки
-            </CardTitle>
-          </CardHeader>
-          <CardContent className="p-0">
-            <Table>
-              <TableHeader>
-                <TableRow className="border-slate-700">
-                  <TableHead className="text-gray-400">Время</TableHead>
-                  <TableHead className="text-gray-400">Цена (USDT)</TableHead>
-                  <TableHead className="text-gray-400">
-                    Количество (BTC)
-                  </TableHead>
-                  <TableHead className="text-gray-400">Сумма (USDT)</TableHead>
-                </TableRow>
-              </TableHeader>
-              <TableBody>
-                {recentTrades.slice(0, 10).map((trade) => (
-                  <TableRow
-                    key={trade.id}
-                    className="border-slate-700 hover:bg-slate-700"
-                  >
-                    <TableCell className="text-gray-400 font-mono text-sm">
-                      {trade.time}
-                    </TableCell>
-                    <TableCell
-                      className={`font-mono ${trade.side === "buy" ? "text-green-400" : "text-red-400"}`}
-                    >
-                      {formatPrice(parseFloat(trade.price))}
-                    </TableCell>
-                    <TableCell className="font-mono text-sm">
-                      {trade.amount}
-                    </TableCell>
-                    <TableCell className="font-mono text-sm">
-                      {formatPrice(
-                        parseFloat(trade.price) * parseFloat(trade.amount),
-                      )}
-                    </TableCell>
-                  </TableRow>
-                ))}
-              </TableBody>
-            </Table>
-          </CardContent>
-        </Card>
+          </div>
+        </div>
       </div>
     </div>
   );
